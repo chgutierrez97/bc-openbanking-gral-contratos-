@@ -1,0 +1,76 @@
+
+
+server:
+    port: ${PORT:${SERVER_PORT:0}}
+    address: 0.0.0.0
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true  
+    serviceUrl:
+      defaultZone: http://localhost:8099/eureka/
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+    
+  application:
+    zipkin: http://localhost:9411  
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081
+        
+
+api:
+  version: 1.0.0
+  description: Bancaribe Consulta Tasa BCV
+  server: http://10.0.22.10:9993
+  contrato:
+    canal: 14
+  doc:
+    description:
+        servi:
+            contr: Consulta si existe un Comtrato para ese cliente
+    summary:
+        servi:
+            contr: Consulta si existe un Comtrato
+            
+tos:
+  uri: terminos del cotrato 
+  
+   
+
+management:
+  endpoints:
+    web:
+      exposure:       
+        include: '*'  
+  endpoint:
+    health:
+      show-details: always
+      
+url:
+  servi:
+    consulta: http://scvsdowl01.tpr.bancaribe:8001/COBISCorp.eCOBIS.OpenBanking.General.Afiliacion.Service/ValidacionWSService     
+  
+
+
+  
+   #definicion de la ruta api - docs 
+springdoc:
+  packagesToScan: com.ve.bc.openbanking
+  api-docs:
+    path: /servicios/doc/javainuse-openapi 
+    # habilitar/deshabilitar api-docs - swagger-ui
+    enabled: true 
+  swagger-ui:
+    enabled: true   
+    # definir la ruta de swagger-ui 
+    path: /servicios/doc/swagger-ui.html
+  pathsToMatch: /servicios/**,  /xyz/**  
+        
