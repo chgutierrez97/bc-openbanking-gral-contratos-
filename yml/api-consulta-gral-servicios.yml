@@ -30,6 +30,10 @@ api:
   version: 1.0.0
   description: Bancaribe Consulta Tasa BCV
   server: http://10.0.22.10:9993
+  ssl:
+    status: false
+    certif:
+      name: /app/microservicios/ctas/certificadoDigital/certificadoBCVFirst.cer
   contrato:
     canal: 14
   doc:
