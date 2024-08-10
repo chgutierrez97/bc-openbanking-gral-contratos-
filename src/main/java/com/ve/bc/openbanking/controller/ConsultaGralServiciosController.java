@@ -15,12 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ve.bc.openbanking.dto.ServicioResponse;
-import com.ve.bc.openbanking.dto.ValiServicioRequest;
-import com.ve.bc.openbanking.dto.ValiServicioResponse;
+import com.ve.bc.openbanking.dto.ServicioRequest;
+
+import com.ve.bc.openbanking.dto.ErrorResponse;
+import com.ve.bc.openbanking.dto.ResponseServicio;
 import com.ve.bc.openbanking.service.ServicioServices;
 import com.ve.bc.openbanking.utils.Utils;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -40,9 +46,36 @@ public class ConsultaGralServiciosController {
 	
 	
 	@Operation(summary = "${api.doc.summary.servi.contr}", description = "${api.doc.description.servi.contr}")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK",
+					content = {
+							@Content(mediaType = "application/json",
+							schema = @Schema(implementation = ServicioResponse.class)		)					
+							}),
+			@ApiResponse(responseCode = "400", description = "Bad Request",
+					content = {
+							@Content(mediaType = "application/json",
+							schema = @Schema(implementation = ErrorResponse.class)		)					
+							}),
+			@ApiResponse(responseCode = "401", description = "Unauthorized",
+			content = {
+					@Content(mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)		)					
+					}),
+			@ApiResponse(responseCode = "409", description = "Conflict",
+			content = {
+					@Content(mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)		)					
+					}),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error",
+			content = {
+					@Content(mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)		)					
+					})
+	})
 	@PostMapping
 	public ResponseEntity<?> getCosultaServicios(@RequestHeader(value = "X-Request-IP", required = true) String ip,@RequestHeader(value = "X-Request-Id", required = false) String tracerId,
-			@Valid @RequestBody ValiServicioRequest request, HttpServletResponse response){
+			@Valid @RequestBody ServicioRequest request, HttpServletResponse response){
 		
 		if (tracerId == null || tracerId == ""){
 			tracerId = utils.generarCodigoTracerId();

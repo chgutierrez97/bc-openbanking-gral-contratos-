@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ServicioResponse {
-	private String id;
+	private Integer id;
 	private String descripcion;
 	private String identificador;
 	private String estado;

@@ -15,8 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.ve.bc.openbanking.dto.ServicioResponse;
-import com.ve.bc.openbanking.dto.ValiServicioRequest;
-import com.ve.bc.openbanking.dto.ValiServicioResponse;
+import com.ve.bc.openbanking.dto.ServicioRequest;
+import com.ve.bc.openbanking.dto.ErrorResponse;
+import com.ve.bc.openbanking.dto.ResponseServicio;
 import com.ve.bc.openbanking.exception.ResourceErroNoFoundServicesException;
 import com.ve.bc.openbanking.repo.ServicioRepository;
 
@@ -30,17 +31,18 @@ public class ServicioServices {
 	@Autowired
 	RestTemplate restTemplate;
 	
-	public ResponseEntity<?> getConsulta(ValiServicioRequest request, String tracerId) {
-		ValiServicioResponse responseServicio = new ValiServicioResponse();
+	public ResponseEntity<?> getConsulta(ServicioRequest request, String tracerId) {
+		ResponseServicio responseServicio = new ResponseServicio();
 		Map<String,String> error = new HashMap<>();
 		responseServicio = contratoRepository.getConsultaServicio(request, tracerId);
 		
 		if (responseServicio.getErrorConsulta().getStatus().equals(Boolean.FALSE)) {
 			return new ResponseEntity<ServicioResponse>(responseServicio.getServicio(), HttpStatus.OK);
 		} else {
-			error.put("codigoError", responseServicio.getErrorConsulta().getCodigoError());
-            error.put("descripcionError", responseServicio.getErrorConsulta().getDescripcionError());            
-            return new ResponseEntity<Map<String,String>>(error, HttpStatus.NOT_FOUND);
+			ErrorResponse errorDto = new ErrorResponse();
+			errorDto.setCodigoError(responseServicio.getErrorConsulta().getCodigoError());
+			errorDto.setDescripcionError(responseServicio.getErrorConsulta().getDescripcionError());	         
+            return new ResponseEntity<ErrorResponse>(errorDto, HttpStatus.CONFLICT);
 		}
 	}
 
