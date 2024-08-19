@@ -45,7 +45,7 @@ public class ConsultaGralServiciosController {
 	
 	
 	
-	@Operation(summary = "${api.doc.summary.servi.contr}", description = "${api.doc.description.servi.contr}")
+	@Operation(summary = "${api.doc.summary}", description = "${api.doc.description}")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK",
 					content = {
