@@ -18,6 +18,7 @@ import com.ve.bc.openbanking.dto.ServicioResponse;
 import com.ve.bc.openbanking.dto.ServicioRequest;
 
 import com.ve.bc.openbanking.dto.ErrorResponse;
+
 import com.ve.bc.openbanking.dto.ResponseServicio;
 import com.ve.bc.openbanking.service.ServicioServices;
 import com.ve.bc.openbanking.utils.Utils;
@@ -47,11 +48,14 @@ public class ConsultaGralServiciosController {
 	
 	@Operation(summary = "${api.doc.summary}", description = "${api.doc.description}")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "OK",
-					content = {
-							@Content(mediaType = "application/json",
-							schema = @Schema(implementation = ServicioResponse.class)		)					
-							}),
+			
+			@ApiResponse(
+					  responseCode = "200",
+					  content = @Content(
+					  array = 
+					  @io.swagger.v3.oas.annotations.media.ArraySchema(
+					      schema = @Schema(implementation = ServicioResponse.class))), 
+					      description = "Ok"),
 			@ApiResponse(responseCode = "400", description = "Bad Request",
 					content = {
 							@Content(mediaType = "application/json",
@@ -74,14 +78,14 @@ public class ConsultaGralServiciosController {
 					})
 	})
 	@PostMapping
-	public ResponseEntity<?> getCosultaServicios(@RequestHeader(value = "X-Request-IP", required = true) String ip,@RequestHeader(value = "X-Request-Id", required = false) String tracerId,
+	public ResponseEntity<?> getCosultaServicios(@RequestHeader(value = "X-Request-Id", required = false) String tracerId,
 			@Valid @RequestBody ServicioRequest request, HttpServletResponse response){
 		
 		if (tracerId == null || tracerId == ""){
 			tracerId = utils.generarCodigoTracerId();
 		}
 		LOGGER.info("Start ConsultaGralServiciosController : getCosultaServicios  RequestId :" + tracerId);
-		LOGGER.info("ConsultaGralContratosController Direccion IP : " + ip);
+		LOGGER.info("ConsultaGralContratosController Direccion IP : " + request.getIp());
 		ResponseEntity<?> valiServiciosResponse = servicioServices.getConsulta(request, tracerId);		
 		LOGGER.info(" End  ConsultaGralServiciosController : getCosultaServicios  RequestId :" + tracerId);
 		response.setHeader("X-Request-Id", tracerId);

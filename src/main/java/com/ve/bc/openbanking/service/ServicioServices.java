@@ -3,6 +3,7 @@ package com.ve.bc.openbanking.service;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,7 +38,7 @@ public class ServicioServices {
 		responseServicio = contratoRepository.getConsultaServicio(request, tracerId);
 		
 		if (responseServicio.getErrorConsulta().getStatus().equals(Boolean.FALSE)) {
-			return new ResponseEntity<ServicioResponse>(responseServicio.getServicio(), HttpStatus.OK);
+			return new ResponseEntity<List<ServicioResponse>>(responseServicio.getServicios(), HttpStatus.OK);
 		} else {
 			ErrorResponse errorDto = new ErrorResponse();
 			errorDto.setCodigoError(responseServicio.getErrorConsulta().getCodigoError());

@@ -10,6 +10,6 @@ public class ResponseServicio {
 	
 	private RespuestaConError errorConsulta;
 	
-	private ServicioResponse servicio;
+	private List<ServicioResponse> servicios;
 
 }

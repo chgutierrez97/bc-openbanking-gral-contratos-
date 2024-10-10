@@ -39,6 +39,7 @@ import org.xml.sax.SAXException;
 import com.ve.bc.openbanking.dto.ResponseContratoCts;
 import com.ve.bc.openbanking.dto.RespuestaConError;
 import com.ve.bc.openbanking.dto.ServicioResponse;
+
 import com.ve.bc.openbanking.dto.ServicioRequest;
 import com.ve.bc.openbanking.dto.ResponseServicio;
 import com.ve.bc.openbanking.exception.ResourceErroServicesException;
@@ -79,6 +80,8 @@ public class ServicioRepository {
 		LOGGER.info("Start ServicioRepository  : getConsultaServiciosCts  RequestId :" + tracerId);
 		ResponseContratoCts responseContratoCts = new ResponseContratoCts();
 		ServicioResponse servicioResponse = new ServicioResponse();
+		List<ServicioResponse> listServicioResponse = new ArrayList<>();
+		
 		ResponseServicio valiServicioResponse = new ResponseServicio();
 		RespuestaConError errorConsulta = new RespuestaConError();
 		URL url = null;
@@ -144,30 +147,50 @@ public class ServicioRepository {
 
 			if (Boolean.valueOf(Status)) {
 				
-				NodeList nodeLstId = document.getElementsByTagName("ns1:id");
-				String Id = nodeLstId.item(0).getTextContent();
-				servicioResponse.setId(Integer.valueOf(Id));
+				NodeList nList = document.getElementsByTagName("ns2:servicios");
+				System.out.println(nList.getLength());
+				for (int i = 0; i < nList.getLength(); i++) {
+					ServicioResponse servicioResponse2 = new ServicioResponse();
+					
+					Element elemA = (Element) nList.item(i);
+					
+					NodeList nodeLstId = elemA.getElementsByTagName("ns1:id");
+					String Id = nodeLstId.item(0).getTextContent();
+					servicioResponse2.setId(Integer.valueOf(Id));
+					
+					NodeList nodeLstDescrip = elemA.getElementsByTagName("ns1:descripcion");
+					String Descripcion = nodeLstDescrip.item(0).getTextContent();
+					servicioResponse2.setDescripcion(Descripcion);
+					
+					NodeList nodeLstIdentific= elemA.getElementsByTagName("ns1:identificador");
+					String Identificador = nodeLstIdentific.item(0).getTextContent();
+					servicioResponse2.setIdentificador(Identificador);
+					
+					NodeList nodeLstEstado = elemA.getElementsByTagName("ns1:estado");
+					String Estado = nodeLstEstado.item(0).getTextContent();
+					servicioResponse2.setEstado(Estado);
+					
+					NodeList nodeLstNombre = elemA.getElementsByTagName("ns1:nombre");
+					String Nombre = nodeLstNombre.item(0).getTextContent();
+					servicioResponse2.setNombre(Nombre);
+					
+					listServicioResponse.add(servicioResponse2);
+					
+				}
+				if (listServicioResponse.size() == 0) {
+					errorConsulta.setCodigoError("901432");
+					errorConsulta.setDescripcionError("No hay registros para mostrar");
+					errorConsulta.setStatus(Boolean.TRUE);
+				}else {
+					errorConsulta.setStatus(Boolean.FALSE);
+				}
 				
-				NodeList nodeLstDescrip = document.getElementsByTagName("ns1:descripcion");
-				String Descripcion = nodeLstDescrip.item(0).getTextContent();
-				servicioResponse.setDescripcion(Descripcion);
-				
-				NodeList nodeLstIdentific= document.getElementsByTagName("ns1:identificador");
-				String Identificador = nodeLstIdentific.item(0).getTextContent();
-				servicioResponse.setIdentificador(Identificador);
-				
-				NodeList nodeLstEstado = document.getElementsByTagName("ns1:estado");
-				String Estado = nodeLstEstado.item(0).getTextContent();
-				servicioResponse.setEstado(Estado);
-				
-				NodeList nodeLstNombre = document.getElementsByTagName("ns1:nombre");
-				String Nombre = nodeLstNombre.item(0).getTextContent();
-				servicioResponse.setNombre(Nombre);
 				
 				
-				errorConsulta.setStatus(Boolean.FALSE);
+				
+				
 				valiServicioResponse.setErrorConsulta(errorConsulta);
-				valiServicioResponse.setServicio(servicioResponse);
+				valiServicioResponse.setServicios(listServicioResponse);
 				valiServicioResponse.setTracerId(tracerId);
 				
 			
@@ -325,7 +348,7 @@ public class ServicioRepository {
 				
 				errorConsulta.setStatus(Boolean.FALSE);
 				valiServicioResponse.setErrorConsulta(errorConsulta);
-				valiServicioResponse.setServicio(servicioResponse);
+				//valiServicioResponse.setServicio(servicioResponse);
 				valiServicioResponse.setTracerId(tracerId);
 				return valiServicioResponse;
 				
